@@ -1,0 +1,14 @@
+{
+  "name": "tagmgr-slides",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node make.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^1.0.0"
+  }
+}
