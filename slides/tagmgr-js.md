@@ -276,15 +276,29 @@ jQueryを外部からロードしてくる。
 でカバー。  
 これでいいでしょ!  
 
-script実行タイミングを変えたい。  
-DOMContentLoadedだけじゃなくて。  
-あと、非同期呼び出しだけじゃなくて同期呼び出しもほしい。  
-
----
-class: center,middle
-# いままでのは何だったんだ!
+ページ中からとってきた値をタグの中で使いたいよね。  
+...
 
 ---
 # タグマネージャの実装
-## 実行タイミング
-DOMContentLoadedだけじゃなくて、タグロード完了後すぐに呼び出したい。
+## マクロの実装
+口で説明するよりも、コードを見たほうが早い!
+
+```html
+<script type="text/javascript">
+var foo = '${{macro_value}}'
+</script>
+```
+
+超めんどくせー!  
+
+まずサーバ側でhtml断片をパースして、マクロ開始文字${があれば、そこでhtmlを分割。  
+それを最後まで繰り返して、最終的にタグ内で連結
+
+```javascript
+'<script type="text/javascript">\nvar foo = \''
++ macro('macro_value')
++  \'\n</script>'
+```
+
+これでタグ実行前にマクロの値を連結できた!
