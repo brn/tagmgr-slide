@@ -193,3 +193,8 @@ td {
 code.html {
   font-size: small;
 }
+
+img.image {
+  width: 80%;
+  height: 60%;
+}

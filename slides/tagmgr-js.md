@@ -202,8 +202,7 @@ document.writeln('</script>');
 
 ## 外部タグの管理
 外部タグって、document.writeか、appendChild、insertBeforeのどれかじゃね？  
-document.writeは対応したし、  
-じゃあElement.prototype書き換えよう。  
+document.writeは対応したし、じゃあElement.prototype書き換えよう。  
 これで、外部からロードされるタグも自分で管理できるぞ!  
 
 ---
@@ -247,6 +246,13 @@ document.writeもinsertBeforeもappendChildも、
 
 ---
 # タグマネージャの実装
+
+## 外部タグの実行順
+
+<img src="images/firing-order.png" class="image" />
+
+---
+# タグマネージャの実装
 ## 実行ルール
 あるページでは実行したいんだけど、このページでは実行したくありません!  
 あーURLパターンとかでしょ？  
@@ -257,11 +263,12 @@ document.writeもinsertBeforeもappendChildも、
 管理画面からパターンを設定するだけ。  
 これは簡単。location.hrefで比較するだけ。
 
+---
+# タグマネージャの実装
+
 ## ページ内の要素による実行ルール
 これはしんどい。  
 IE6でも動かさないといけないので、まずはCSS3セレクタが必要。  
-最初はsizzleでチャレンジ!!  
-
 textとか属性とか取得したいんだよね。  
 あとエンジニア以外も簡単に使えるようにして。  
 
@@ -292,7 +299,7 @@ var foo = '${{macro_value}}'
 
 超めんどくせー!  
 
-まずサーバ側でhtml断片をパースして、マクロ開始文字${があれば、そこでhtmlを分割。  
+まずサーバ側でhtml断片をパースして、マクロ開始文字${{があれば、そこでhtmlを分割。  
 それを最後まで繰り返して、最終的にタグ内で連結
 
 ```javascript
@@ -301,4 +308,37 @@ var foo = '${{macro_value}}'
 +  \'\n</script>'
 ```
 
-これでタグ実行前にマクロの値を連結できた!
+これでタグ実行前にマクロの値を連結する。
+
+---
+# タグマネージャの実装
+## イベントの実装
+クリックした時にタグを配信したいです。
+...
+
+jQueryのonでタグを実行する。  
+イベント自体は管理画面から、どのイベントで配信するのか定義する。  
+
+リンクをクリックして、ページ遷移する前に確実に計測したいんです!  
+...
+
+
+---
+# タグマネージャの実装
+## イベントの遅延
+html要素(`document.documentElement`)にイベントを設定し、  
+先ほどの優先度付きロード機能で、イベントを直列化する。  
+ここに来るまでに全イベントが発火しているはずなので、ページ内のイベントは気にしないことにする。  
+その後、event.preventDefaultでページ遷移を阻止し、  
+ユーザーが登録したイベントを次々に高優先度で優先度付きキューに突っ込む。  
+最後に低優先度でevent.targetなリンクのhrefを取得し、location.hrefに代入する。
+
+
+---
+# タグマネージャの実装
+## イベントの遅延
+まずは直列化する。
+<img src="./images/event-firing-order.png" class="image" />
+
+最後にページ遷移コールバックを発火
+<img src="./images/event-firing-order2.png" style="width: 100%;height: 60%;" />
