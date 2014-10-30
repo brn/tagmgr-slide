@@ -342,3 +342,15 @@ html要素(`document.documentElement`)にイベントを設定し、
 
 最後にページ遷移コールバックを発火
 <img src="./images/event-firing-order2.png" style="width: 100%;height: 60%;" />
+
+
+---
+とまあこんな感じの機能があります。  
+しかし、今度はタグマネージャの下にタグマネージャを紐つける事態に...  
+問題は山積みです...
+
+
+---
+class:center, middle
+# 以上です。
+### ご清聴ありがとうございました。
