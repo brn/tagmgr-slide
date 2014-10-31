@@ -18,6 +18,11 @@ h2 {
   border-left: solid 10px #ccc;
   border-bottom: solid 1px #ccc;
 }
+.no-border h2 {
+  padding:0;
+  margin:0;
+  border:0;
+}
 .remark-slide-content h1 { font-size: 3em; text-align: center; }
 .remark-slide-content h2 { font-size: 1.5em; }
 .remark-slide-content h3 { font-size: 1.2em; }
@@ -58,13 +63,12 @@ code {
   padding: 15px;
 }
 .inverse {
-  background: #272822;
-  color: #777872;
-  text-shadow: 0 0 20px #333;
+  background: #99BBFF;
+  color: #FFFFFF;
 }
 .inverse h1, .inverse h2 {
-  color: #f3f3f3;
-  line-height: 0.8em;
+  color: #FFFFFF;
+  line-height: 2em;
 }
 
 /* Slide-specific styling */

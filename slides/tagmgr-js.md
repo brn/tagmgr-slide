@@ -1,9 +1,14 @@
-class: center,middle
-# 広告業界のタグマネージメントツール
+name: inverse
+class: center,middle,inverse
+# Inside TagManager
 
 ---
-class: center,middle
-## 株式会社サイバーエージェント CAMP事業部
+name: inverse
+class: center,middle,inverse,no-border
+# Cyberagent.inc
+
+## CAMP事業部
+
 # @brn
 
 ---
@@ -26,7 +31,7 @@ class: center,middle
 最近は過剰に使われすぎ...
 
 ---
-# 問題点
+# Probrems...
 某サイトのタグ
 
 ```html
@@ -71,13 +76,17 @@ document.write('<SCR' + 'IPT language="JavaScript" type="text/javascript"  src="
 計測の為にタグを埋め込みまくる
 
 ---
-# 問題点
+# Probrems...
 
 ## 場所がわからない!
 どこになんのタグを埋めたかわからなくなる。
 
+--
+
 ## タグを変えられない!
 そんなに簡単に本番のページはいじれません!
+
+--
 
 # どうする？
 
@@ -86,7 +95,7 @@ class: center,middle
 # タグマネージャの出番です!
 
 ---
-# タグマネージャとは？
+# What is TagManager?
 
 タグ管理の煩雑さを解消する。
 
@@ -95,12 +104,14 @@ class: center,middle
 各ページに直接埋めていたタグを専用の管理画面に設定する。  
 すると、タグマネージャが各タグをロードして実行してくれる。
 
+--
+
 ## これで解決?
 まだです...  
 タグマネージャの実装が問題に...
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 
 ## 問題点
 * 様々なタグを実行しなければならない。
@@ -156,7 +167,7 @@ class:center,middle
 #冗談でしょ?
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## 時は流れ...
 非同期にタグを読み込んで実行しよう!  
 でもdocument.writeがあると動かない...  
@@ -168,13 +179,17 @@ class:center,middle
 #冗談でしょ?
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## 地獄の始まり
 まずは、document.writeをなんとかしよう。  
+
+--
 
 ## doucment.writeの再実装
 シンプルに書き込まれた文字列をhtmlとしてパースして、
 scriptを非同期に呼び出して、htmlはそのまま書きだそう!
+
+--
 
 ## うまくいかない!
 document.writeって複数に分けられるんだよね...
@@ -189,24 +204,28 @@ document.writeln('</script>');
 本物とは動作が変わるけどしょうがない...
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## タグの実行時間とか、エラーを検知したい
 タグでエラーが起きても画面に影響だしたくないよね。  
 エラー率とかほしい。  
 実行時間もあるといいよね。  
 ...
 
+--
+
 ## エラー抑制
 まずはシンプルにインラインscriptをtry catchしてみる。  
 外部からロードされるタグは？
 
+--
+
 ## 外部タグの管理
 外部タグって、document.writeか、appendChild、insertBeforeのどれかじゃね？  
 document.writeは対応したし、じゃあElement.prototype書き換えよう。  
-これで、外部からロードされるタグも自分で管理できるぞ!  
+これで、外部からロードされるタグも自分で管理できるぞ!
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 
 ## ロード状態管理
 * onloadとonerrorでロード失敗を管理
@@ -217,12 +236,14 @@ IEはしょうがない...
 実行時例外は?  
 ...
 
+--
+
 ## 外部タグの例外管理
 try catchできないし、どうしよう。  
 そうだwindow.onerror!!
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## タグの実行機能
 * document.write、Element.prototype.insertBefore、Element.prototype.appendChildは実行する直前に上書きして、実行し終わったら元に戻す。
 * インラインタグの場合はtry catchでeval
@@ -231,6 +252,8 @@ try catchできないし、どうしよう。
 
 これで外部のタグは全部支配した。
 
+--
+
 ## エラー検知
 エラーが起きたら、どのタグでエラーが起きたのか知りたいよね。  
 ...
@@ -238,33 +261,40 @@ document.writeもinsertBeforeもappendChildも、
 どのタグから呼ばれたのかわからない...
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## エラー検知
-現在実行中のタグを持っておこう。
-そして、appendChildとかの呼び出しと、script実行完了コールバックにそれぞれ優先度をつけよう!  
-優先度付きキューにコールバック入れて、呼び出し完了までブロックすれば現在の親がわかるじゃん!
+まず、現在実行中のタグを持っておく。
+
+そして、グローバルな優先度付きキューをもっておき、  
+script実行完了時のコールバックを低優先度にする。  
+その後、appendChildとかの呼び出しは高優先度にすれば、  
+常に親は現在実行中のタグになる。
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 
 ## 外部タグの実行順
 
 <img src="images/firing-order.png" class="image" />
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## 実行ルール
 あるページでは実行したいんだけど、このページでは実行したくありません!  
+
 あーURLパターンとかでしょ？  
 ページ内の文字列とかです!  
+
 ファッ!?
+
+--
 
 ## URLによる実行ルール
 管理画面からパターンを設定するだけ。  
 これは簡単。location.hrefで比較するだけ。
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 
 ## ページ内の要素による実行ルール
 これはしんどい。  
@@ -275,7 +305,7 @@ textとか属性とか取得したいんだよね。
 jQuery...
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## jQueryのロード
 jQueryを外部からロードしてくる。  
 でもページ中に存在するjQueryと被るとまずいので、  
@@ -287,9 +317,11 @@ jQueryを外部からロードしてくる。
 ...
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## マクロの実装
 口で説明するよりも、コードを見たほうが早い!
+
+--
 
 ```html
 <script type="text/javascript">
@@ -298,6 +330,8 @@ var foo = '${{macro_value}}'
 ```
 
 超めんどくせー!  
+
+--
 
 まずサーバ側でhtml断片をパースして、マクロ開始文字${{があれば、そこでhtmlを分割。  
 それを最後まで繰り返して、最終的にタグ内で連結
@@ -311,7 +345,7 @@ var foo = '${{macro_value}}'
 これでタグ実行前にマクロの値を連結する。
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## イベントの実装
 クリックした時にタグを配信したいです。
 ...
@@ -319,35 +353,61 @@ var foo = '${{macro_value}}'
 jQueryのonでタグを実行する。  
 イベント自体は管理画面から、どのイベントで配信するのか定義する。  
 
-リンクをクリックして、ページ遷移する前に確実に計測したいんです!  
-...
+でもこれってクリックして画面遷移したら、計測失敗しますよね？
 
+リンクをクリックして、ページ遷移する前に確実に計測したいんです!
 
 ---
-# タグマネージャの実装
+# The implementations of TagManager
 ## イベントの遅延
 html要素(`document.documentElement`)にイベントを設定し、  
 先ほどの優先度付きロード機能で、イベントを直列化する。  
-ここに来るまでに全イベントが発火しているはずなので、ページ内のイベントは気にしないことにする。  
-その後、event.preventDefaultでページ遷移を阻止し、  
-ユーザーが登録したイベントを次々に高優先度で優先度付きキューに突っ込む。  
-最後に低優先度でevent.targetなリンクのhrefを取得し、location.hrefに代入する。
 
-
----
-# タグマネージャの実装
-## イベントの遅延
-まずは直列化する。
 <img src="./images/event-firing-order.png" class="image" />
 
-最後にページ遷移コールバックを発火
-<img src="./images/event-firing-order2.png" style="width: 100%;height: 60%;" />
-
 
 ---
-とまあこんな感じの機能があります。  
-しかし、今度はタグマネージャの下にタグマネージャを紐つける事態に...  
+# The implementations of TagManager
+## イベントの遅延
+
+ここに来るまでに全イベントが発火しているはずなので、ページ内のイベントは気にしないことにする。  
+その後、event.preventDefaultでページ遷移を阻止し、  
+ユーザーがhtml要素自体に登録したイベントを次々に高優先度で優先度付きキューに突っ込む。  
+最後に低優先度でevent.targetなリンクのhrefを取得し、location.hrefに代入する。
+
+<img src="./images/event-firing-order2.png" style="width: 100%;height: 50%;" />
+
+---
+# Future...
+
+このように、タグマネージャー自体には複雑な機能が実装されています。  
+これで問題は解決したのかと思いきや、  
+今度はタグマネージャの下にタグマネージャを紐つける事態に...  
 問題は山積みです...
+
+--
+
+# We need
+# TagManagerManager
+
+--
+やってられるか!
+
+---
+# Vendors
+
+<img src="./images/ca-tag-solution-logo.png" />  
+http://web.tg-m.jp/
+
+<img src="./images/google-logo.png" />  
+http://www.google.co.jp/tagmanager/
+
+<img src="./images/yahoo-tagmanager-logo.png" />  
+http://tagmanager.yahoo.co.jp/
+
+<img src="./images/tagknight-logo.png" />  
+http://www.tagknight.jp/
+
 
 
 ---
