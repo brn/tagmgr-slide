@@ -1,15 +1,10 @@
 name: inverse
-class: center,middle,inverse
+class: center,middle,inverse,no-border
 # Inside TagManager
 
----
-name: inverse
-class: center,middle,inverse,no-border
-# Cyberagent.inc
+## Cyberagent.inc
 
-## CAMP事業部
-
-# @brn
+## brn
 
 ---
 # javascript for AD
@@ -72,8 +67,6 @@ document.write('<SCR' + 'IPT language="JavaScript" type="text/javascript"  src="
   width="1" height="1" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
 </noscript>
 ```
-
-計測の為にタグを埋め込みまくる
 
 ---
 # Probrems...
@@ -247,6 +240,7 @@ try catchできないし、どうしよう。
 ## タグの実行機能
 * document.write、Element.prototype.insertBefore、Element.prototype.appendChildは実行する直前に上書きして、実行し終わったら元に戻す。
 * インラインタグの場合はtry catchでeval
+* ただし、IEはevalが壊れているのでwindow.execScriptで実行
 * 外部タグのロードはonloadとonerror、onreadystatechangeで管理
 * 外部タグの例外はwindow.onerrorでキャッチ
 
@@ -409,6 +403,11 @@ http://tagmanager.yahoo.co.jp/
 http://www.tagknight.jp/
 
 
+---
+class:center,middle
+#Slides
+remarks.js  
+http://remarkjs.com/
 
 ---
 class:center, middle
